@@ -4,26 +4,92 @@ package polynomy;
  *
  * @author marts
  */
+
 public class Polynomy {
 
-    private double stupenPolynomu;
     private final double[] koeficienty;
-    private double[] mocnitele;
 
-    // zada se pouze jen stupenPolynomu polynomu a on se automaticky vytvori podle
-    // pascalova
+    // Konstruktor pro vytvoření polynomu z pole koeficientů
+    public Polynomy(double[] koeficienty) {
+        this.koeficienty = new double[koeficienty.length];
+        System.arraycopy(koeficienty, 0, this.koeficienty, 0, koeficienty.length);
+    }
+
+    // Konstruktor pro vytvoření polynomu nultého stupně (konstanty)
+    public Polynomy(double konstanta) {
+        this.koeficienty = new double[] { konstanta };
+    }
+
+    // Konstruktor pro vytvoření polynomu prvního stupně (přímky)
+    public Polynomy(double a, double b) {
+        this.koeficienty = new double[] { a, b };
+    }
+
+    // Konstruktor pro vytvoření polynomu druhého stupně
+    public Polynomy(double a, double b, double c) {
+        this.koeficienty = new double[] { a, b, c };
+    }
+
+    // Metoda pro získání stupně polynomu
+    public int getStupen() {
+        return this.koeficienty.length - 1;
+    }
+
+    // Metoda pro získání koeficientu na dané pozici
+    public double getKoeficient(int position) {
+        return this.koeficienty[position];
+    }
+
+    // Metoda pro výpočet hodnoty polynomu pomocí Hornerova schématu
+    public double evaluate(double x) {
+        double result = 0;
+        for (int i = this.koeficienty.length - 1; i >= 0; i--) {
+            result = this.koeficienty[i] + x * result;
+        }
+        return result;
+    }
+
+    // Metoda pro získání textového zápisu polynomu
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = this.koeficienty.length - 1; i >= 0; i--) {
+            if (i == 0) {
+                sb.append(this.koeficienty[i]);
+            } else if (i == 1) {
+                sb.append(this.koeficienty[i]).append("x + ");
+            } else {
+                sb.append(this.koeficienty[i]).append("x^").append(i).append(" + ");
+            }
+        }
+        return sb.toString();
+
+    }
+
+    // Metoda pro výpočet derivace polynomu
+    public Polynomy derivace() {
+        if (this.koeficienty.length == 1) {
+            return new Polynomy(0);
+        }
+        double[] newKoeficienty = new double[this.koeficienty.length - 1];
+        for (int i = 0; i < newKoeficienty.length; i++) {
+            newKoeficienty[i] = (i + 1) * this.koeficienty[i + 1];
+        }
+        return new Polynomy(newKoeficienty);
+    }
+
+    // zada se pouze jen stupen polynomu a on se automaticky vytvori podle pascalova
     // trojuhelniku
 
-    public Polynomy(int stupen) {
+    public int[] autoPolynom(int stupen) {
         if (stupen < 0) {
             throw new IllegalArgumentException("stupen polynomu je mensi jak 0");
         } else {
-            this.koeficienty = new double[stupen];
+            int[] array = new int[stupen];
             for (int i = 0; i <= stupen; i++) {
                 int temp = pascalTriangle(i, stupen);
-                this.koeficienty[i] = temp;
+                array[i] = temp;
             }
-            this.stupenPolynomu = stupen;
+            return array;
         }
     }
 
@@ -43,39 +109,4 @@ public class Polynomy {
         return number;
     }
 
-    public Polynomy(String vzorec) {
-        String[] splitedNumbers = vzorec.split(" |x^");
-        this.koeficienty = new double[splitedNumbers.length / 2];
-        int iMoc = 0;
-        int iCisl = 0;
-        double maxstupenPolynomu = 0;
-        for (int i = 0; i < splitedNumbers.length; i++) {
-            double temp = Integer.parseInt(splitedNumbers[i]);
-            if (i % 2 == 0 || i == 0) {
-                this.koeficienty[iCisl] = temp;
-                iCisl++;
-            } else {
-                this.mocnitele[iMoc] = temp;
-                iMoc++;
-                if (temp > maxstupenPolynomu) {
-                    maxstupenPolynomu = temp;
-                }
-            }
-        }
-        this.stupenPolynomu = maxstupenPolynomu;
-    }
-    // ukazkovy vstup: 5x^3 + 4x^2 - 2x^1 + 3x^0
-
-    public double getStupenPolynomu() {
-        return stupenPolynomu;
-    }
-
-    public String getString() {
-        String vypis = "";
-        double x = koeficienty.length;
-        for (int i = 0; i < x; i++) {
-            vypis += koeficienty[i] + "x^" + mocnitele[i];
-        }
-        return vypis;
-    }
 }
