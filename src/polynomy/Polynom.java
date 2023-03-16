@@ -5,28 +5,29 @@ package polynomy;
  * @author marts
  */
 
-public class Polynomy {
+public class Polynom {
 
     private final double[] koeficienty;
 
     // Konstruktor pro vytvoření polynomu z pole koeficientů
-    public Polynomy(double[] koeficienty) {
+    public Polynom(double[] koeficienty) {
         this.koeficienty = new double[koeficienty.length];
         System.arraycopy(koeficienty, 0, this.koeficienty, 0, koeficienty.length);
+        // this.koeficienty = koeficienty;
     }
 
     // Konstruktor pro vytvoření polynomu nultého stupně (konstanty)
-    public Polynomy(double konstanta) {
+    public Polynom(double konstanta) {
         this.koeficienty = new double[] { konstanta };
     }
 
     // Konstruktor pro vytvoření polynomu prvního stupně (přímky)
-    public Polynomy(double a, double b) {
+    public Polynom(double a, double b) {
         this.koeficienty = new double[] { a, b };
     }
 
     // Konstruktor pro vytvoření polynomu druhého stupně
-    public Polynomy(double a, double b, double c) {
+    public Polynom(double a, double b, double c) {
         this.koeficienty = new double[] { a, b, c };
     }
 
@@ -37,13 +38,13 @@ public class Polynomy {
 
     // Metoda pro získání koeficientu na dané pozici
     public double getKoeficient(int position) {
-        return this.koeficienty[position];
+        return this.koeficienty[position - 1];
     }
 
     // Metoda pro výpočet hodnoty polynomu pomocí Hornerova schématu
     public double evaluate(double x) {
         double result = 0;
-        for (int i = this.koeficienty.length - 1; i >= 0; i--) {
+        for (int i = 0; i <= this.koeficienty.length - 1; i++) {
             result = this.koeficienty[i] + x * result;
         }
         return result;
@@ -52,61 +53,66 @@ public class Polynomy {
     // Metoda pro získání textového zápisu polynomu
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (int i = this.koeficienty.length - 1; i >= 0; i--) {
-            if (i == 0) {
+        int i2 = this.koeficienty.length - 1;
+        for (int i = 0; i <= this.koeficienty.length - 1; i++) {
+            if (i == this.koeficienty.length - 1) {
                 sb.append(this.koeficienty[i]);
-            } else if (i == 1) {
+            } else if (i == this.koeficienty.length - 2) {
                 sb.append(this.koeficienty[i]).append("x + ");
             } else {
-                sb.append(this.koeficienty[i]).append("x^").append(i).append(" + ");
+                sb.append(this.koeficienty[i]).append("x^").append(i2).append(" + ");
             }
+            i2--;
         }
         return sb.toString();
 
     }
 
     // Metoda pro výpočet derivace polynomu
-    public Polynomy derivace() {
+    public Polynom derivace() {
         if (this.koeficienty.length == 1) {
-            return new Polynomy(0);
+            return new Polynom(0);
         }
         double[] newKoeficienty = new double[this.koeficienty.length - 1];
         for (int i = 0; i < newKoeficienty.length; i++) {
             newKoeficienty[i] = (i + 1) * this.koeficienty[i + 1];
         }
-        return new Polynomy(newKoeficienty);
+        return new Polynom(newKoeficienty);
     }
 
-    // zada se pouze jen stupen polynomu a on se automaticky vytvori podle pascalova
-    // trojuhelniku
-
-    public int[] autoPolynom(int stupen) {
-        if (stupen < 0) {
-            throw new IllegalArgumentException("stupen polynomu je mensi jak 0");
-        } else {
-            int[] array = new int[stupen];
-            for (int i = 0; i <= stupen; i++) {
-                int temp = pascalTriangle(i, stupen);
-                array[i] = temp;
-            }
-            return array;
-        }
-    }
-
-    public int factorial(int i) {
-        if (i <= 0)
-            return 1;
-        return i * factorial(i - 1);
-    }
-
-    public int pascalTriangle(int n, int k) {
-        int number;
-        int nk = n - k;
-        int factN = factorial(n);
-        int factK = factorial(k);
-        int factNK = factorial(nk);
-        number = factN / (factK * factNK);
-        return number;
-    }
-
+    /*
+     * 
+     * // zada se pouze jen stupen polynomu a on se automaticky vytvori podle
+     * pascalova
+     * // trojuhelniku
+     * 
+     * public int[] autoPolynom(int stupen) {
+     * if (stupen < 0) {
+     * throw new IllegalArgumentException("stupen polynomu je mensi jak 0");
+     * } else {
+     * int[] array = new int[stupen];
+     * for (int i = 0; i <= stupen; i++) {
+     * int temp = pascalTriangle(i, stupen);
+     * array[i] = temp;
+     * }
+     * return array;
+     * }
+     * }
+     * 
+     * public int factorial(int i) {
+     * if (i <= 0)
+     * return 1;
+     * return i * factorial(i - 1);
+     * }
+     * 
+     * public int pascalTriangle(int n, int k) {
+     * int number;
+     * int nk = n - k;
+     * int factN = factorial(n);
+     * int factK = factorial(k);
+     * int factNK = factorial(nk);
+     * number = factN / (factK * factNK);
+     * return number;
+     * }
+     */
 }
